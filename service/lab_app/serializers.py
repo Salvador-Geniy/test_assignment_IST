@@ -5,25 +5,15 @@ from .models import Test, Scores
 
 
 class ScoreSerializer(ModelSerializer):
-    indicator_name = serializers.SerializerMethodField()
-    metric_name = serializers.SerializerMethodField()
-    metric_unit = serializers.SerializerMethodField()
+    indicator_name = serializers.CharField(source='indicator_metric.indicator.name')
+    metric_name = serializers.CharField(source='indicator_metric.metric.metric_name')
+    metric_unit = serializers.CharField(source='indicator_metric.metric.unit')
     is_within_normal_range = serializers.SerializerMethodField()
 
     class Meta:
         model = Scores
         fields = ('id', 'score', 'indicator_name', 'metric_name',
                   'metric_unit', 'is_within_normal_range')
-
-    def get_indicator_name(self, obj):
-        indicator_name = obj.indicator_metric.indicator.name
-        return indicator_name
-
-    def get_metric_name(self, obj):
-        return obj.indicator_metric.metric.metric_name
-
-    def get_metric_unit(self, obj):
-        return obj.indicator_metric.metric.unit
 
     def get_is_within_normal_range(self, obj):
         min = obj.indicator_metric.references.min_score
