@@ -15,10 +15,10 @@ class ScoreSerializer(ModelSerializer):
         fields = ('id', 'score', 'indicator_name', 'metric_name',
                   'metric_unit', 'is_within_normal_range')
 
-    def get_is_within_normal_range(self, obj):
-        min = obj.indicator_metric.references.min_score
-        max = obj.indicator_metric.references.max_score
-        return min <= obj.score <= max
+    def get_is_within_normal_range(self, instance):
+        min = instance.indicator_metric.references.min_score
+        max = instance.indicator_metric.references.max_score
+        return min <= instance.score <= max
 
 
 class TestSerializer(ModelSerializer):
@@ -29,5 +29,5 @@ class TestSerializer(ModelSerializer):
         model = Test
         fields = ('id', 'laboratory', 'duration', 'results')
 
-    def get_duration(self, obj):
-        return (obj.completed_at - obj.started_at)
+    def get_duration(self, instance):
+        return (instance.completed_at - instance.started_at)

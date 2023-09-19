@@ -1,5 +1,5 @@
-
-from django.db.models import Prefetch
+from django.core.cache import cache
+from django.db.models import Prefetch, Count
 from rest_framework.generics import ListAPIView
 from rest_framework.permissions import IsAuthenticated
 
@@ -17,3 +17,21 @@ class TestListView(ListAPIView):
             'indicator_metric__references'))
     )
     serializer_class = TestSerializer
+
+    def list(self, request, *args, **kwargs):
+        queryset = self.filter_queryset(self.get_queryset())
+        response = super().list(request, *args, **kwargs)
+
+        test_cache_name = 'test_cache'
+        test_cache = cache.get(test_cache_name)
+        if test_cache:
+            total_count_results = test_cache
+        else:
+            total_count_results = queryset.aggregate(total=Count('scores')).get('total')
+            cache.set(test_cache_name, total_count_results, 30)
+
+        response_data = {}
+        response_data.update({'total_results': response.data})
+        response_data.update({'count_results': total_count_results})
+        response.data = response_data
+        return response
