@@ -5,7 +5,7 @@ import uuid
 
 from django.db.models.signals import post_delete
 
-from service.lab_app.receivers import delete_cache_test_cache
+from .receivers import delete_cache_test_cache
 
 
 class Status(models.Model):
