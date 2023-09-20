@@ -1,5 +1,11 @@
+from django.conf import settings
+from django.core.cache import cache
 from django.db import models
 import uuid
+
+from django.db.models.signals import post_delete
+
+from service.lab_app.receivers import delete_cache_test_cache
 
 
 class Status(models.Model):
@@ -28,6 +34,13 @@ class Test(models.Model):
     completed_at = models.DateTimeField()
     laboratory = models.ForeignKey(Laboratory, on_delete=models.CASCADE)
     status = models.OneToOneField(Status, on_delete=models.PROTECT)
+
+    def save(self, *args, **kwargs):
+        creating = not bool(self.id)
+        result = super().save(*args, **kwargs)
+        if creating:
+            cache.delete(settings.TEST_CACHE_NAME)
+        return result
 
 
 class Indicator(models.Model):
@@ -74,3 +87,7 @@ class References(models.Model):
     class Meta:
         verbose_name = 'references'
         verbose_name_plural = 'references'
+
+
+post_delete.connect(delete_cache_test_cache, sender=Test)
+post_delete.connect(delete_cache_test_cache, sender=Scores)

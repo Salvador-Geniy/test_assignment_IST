@@ -1,3 +1,4 @@
+from django.conf import settings
 from django.core.cache import cache
 from django.db.models import Prefetch, Count
 from rest_framework.generics import ListAPIView
@@ -22,13 +23,12 @@ class TestListView(ListAPIView):
         queryset = self.filter_queryset(self.get_queryset())
         response = super().list(request, *args, **kwargs)
 
-        test_cache_name = 'test_cache'
-        test_cache = cache.get(test_cache_name)
+        test_cache = cache.get(settings.TEST_CACHE_NAME)
         if test_cache:
             total_count_results = test_cache
         else:
             total_count_results = queryset.aggregate(total=Count('scores')).get('total')
-            cache.set(test_cache_name, total_count_results, 30)
+            cache.set(settings.TEST_CACHE_NAME, total_count_results, 60 * 60)
 
         response_data = {}
         response_data.update({'total_results': response.data})

@@ -155,3 +155,5 @@ CACHES = {
         "LOCATION": "redis://redis:6379",
     }
 }
+
+TEST_CACHE_NAME = 'test_cache'
