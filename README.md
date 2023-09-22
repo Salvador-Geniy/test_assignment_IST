@@ -78,4 +78,6 @@ http://localhost:8000/admin/ - админ-панель
 
 http://localhost:8000/results/ - результаты исследований
 
+Пример работы сервера:
+
 ![Alt text](/example_results.PNG?raw=true "Optional Title")
