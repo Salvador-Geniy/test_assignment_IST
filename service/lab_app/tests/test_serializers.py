@@ -1,7 +1,7 @@
 from django.test import TestCase
-from service.lab_app.models import (Status, Laboratory, Indicator,
+from lab_app.models import (Status, Laboratory, Indicator,
                                     Test, Metric, IndicatorMetric, Scores, References)
-from service.lab_app.serializers import TestSerializer, ScoreSerializer
+from lab_app.serializers import TestSerializer, ScoreSerializer
 import datetime
 
 
@@ -18,7 +18,7 @@ class ScoreSerializerTestCase(TestCase):
                                              status=statuses[2])
         metric = Metric.objects.create(metric_name='Metric',
                                        description='Metric description',
-                                       unit='sek',
+                                       unit='sec',
                                        status=statuses[3])
         indicator_metric = IndicatorMetric.objects.create(indicator=indicator,
                                                           metric=metric,
@@ -37,7 +37,7 @@ class ScoreSerializerTestCase(TestCase):
             'score': '12.00000',
             'indicator_name': 'Indicator',
             'metric_name': 'Metric',
-            'metric_unit': 'sek',
+            'metric_unit': 'sec',
             'is_within_normal_range': True
         }
         self.assertEqual(expected_data, data)
@@ -56,7 +56,7 @@ class TestSerializerTestCase(TestCase):
                                              status=statuses[2])
         metric1 = Metric.objects.create(metric_name='Metric 1',
                                         description='Metric 1 description',
-                                        unit='sek',
+                                        unit='sec',
                                         status=statuses[3])
         metric2 = Metric.objects.create(metric_name='Metric 2',
                                         description='Metric 2 description',
@@ -95,7 +95,7 @@ class TestSerializerTestCase(TestCase):
                     "score": "12.00000",
                     "indicator_name": "Test Indicator",
                     "metric_name": "Metric 1",
-                    "metric_unit": "sek",
+                    "metric_unit": "sec",
                     "is_within_normal_range": True
                 },
                 {
